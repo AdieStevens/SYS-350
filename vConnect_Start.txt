@@ -4,7 +4,7 @@ https://github.com/AdieStevens/SYS-350?
 # Imports the getpass module, which provides secure password input (hides user input).
 import getpass
 # Prompts the user for a password securely (without displaying it on the screen).
-passwd = getpass.getpass()
+passw = getpass.getpass()
 # Imports the SmartConnect function from the pyVim.connect module, which is used to connect to vCenter or an ESXi host.
 from pyVim.connect import SmartConnect
 # Imports the ssl module, which provides access to Secure Sockets Layer (SSL) and Transport Layer Security (TLS) encryption.
@@ -12,11 +12,11 @@ import ssl
 # Creates an SSL context using TLS version 1.2 for secure communication.
 s=ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 # Disables SSL certificate verification (which can be insecure in production environments).
-s.verify_mode=ssl.CERT_NON
+s.verify_mode=ssl.CERT_NONE
 #  Establishes a connection to the vCenter server at vcenter.adie.local using the provided username, password, and SSL context.
-si=SmartConnect(host="vcenter.adie.local",user="adie-adm@adie.local, pwd=passw, sslContext=s)
+si=SmartConnect(host="vcenter.adie.local", user="adie-adm@adie.local", pwd=passw, sslContext=s)
 # Retrieves information about the vCenter or ESXi instance from the connected session.
-aboutInfo=si.context.about
+aboutInfo=si.content.about
 # Prints the entire aboutInfo object, which contains details about the vCenter or ESXi host.
 print(aboutInfo)
 # Prints the full name of the vCenter host
