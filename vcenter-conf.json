@@ -1,0 +1,7 @@
+
+{ "vcenter": [
+    {
+        "vcenterhost" : "vcenter.adie.local",
+        "vcenteradmin" : "adie-adm@adie.local"
+    }]
+}
