@@ -1,3 +1,4 @@
+import getpass
 import json
 import ssl
 import atexit
@@ -77,7 +78,7 @@ def menu():
     config = load_vcenter_config()
     vcenter_host = config['vcenterhost']
     username = config['vcenteradmin']
-    password = input(f"Enter password for {username}: ")
+    password = getpass.getpass(f"Enter password for {username}: ")
 
     # Connect to vCenter
     si = connect_to_vcenter(vcenter_host, username, password)
