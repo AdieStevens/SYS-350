@@ -34,27 +34,41 @@ def get_session_info(si):
     }
 
 # Requirement 3: Search and filter VMs
-def search_vms(si, vm_name_filter=None):
+def list_and_get_vm_details(si):
     container = si.content.viewManager.CreateContainerView(
         si.content.rootFolder, [vim.VirtualMachine], True)
     vms = container.view
     container.Destroy()
 
-    vm_info_list = []
-    for vm in vms:
-        if vm_name_filter and vm_name_filter not in vm.name:
-            continue
-        
-        vm_info = {
-            'VM Name': vm.name,
-            'Power State': vm.runtime.powerState,
-            'CPUs': vm.config.hardware.numCPU,
-            'Memory': vm.config.hardware.memoryMB / 1024,
-            'IP Address': vm.guest.ipAddress
-        }
-        vm_info_list.append(vm_info)
+    # Store all VM names
+    vm_names = [vm.name for vm in vms]
+    print("\nList of VMs:")
+    for name in vm_names:
+        print(f"- {name}")
 
-    return vm_info_list
+    # Prompt user to select a VM name
+    selected_vm_name = input("\nEnter the VM name to get details: ").strip()
+    
+    # Find the specific VM
+    for vm in vms:
+        if vm.name == selected_vm_name:
+            vm_info = {
+                'VM Name': vm.name,
+                'Power State': vm.runtime.powerState,
+                'CPUs': vm.config.hardware.numCPU if vm.config.hardware else "N/A",
+                'Memory (GB)': vm.config.hardware.memoryMB / 1024 if vm.config.hardware else "N/A",
+                'IP Address': vm.guest.ipAddress if vm.guest.ipAddress else "N/A"
+            }
+            print("\nVM Details:")
+            print(f"Name: {vm_info['VM Name']}")
+            print(f"Power State: {vm_info['Power State']}")
+            print(f"CPUs: {vm_info['CPUs']}")
+            print(f"Memory (GB): {vm_info['Memory (GB)']}GB")
+            print(f"IP Address: {vm_info['IP Address']}")
+            return
+    
+    # If no VM was found with the given name
+    print(f"\nNo VM found with the name: {selected_vm_name}")
 
 # Main Menu
 
@@ -86,11 +100,7 @@ def menu():
             print(f"Session Info:\nUser: {session_info['User']}\nvCenter Server: {session_info['vCenter Server']}\nSource IP: {session_info['Source IP']}")
 
         elif choice == '3':
-            filter_name = input("Enter VM name filter (leave empty for all VMs): ")
-            vms = search_vms(si, filter_name)
-            print("VMs found:")
-            for vm in vms:
-                print(f"Name: {vm['VM Name']}, Power State: {vm['Power State']}, CPUs: {vm['CPUs']}, Memory: {vm['Memory (GB)']}GB, IP: {vm['IP Address']}")
+            list_and_get_vm_details(si)
 
         elif choice == '4':
             print("Dueces")
